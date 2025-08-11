@@ -16,8 +16,8 @@ public class AutorController {
     private AutorService service;
 
     @PostMapping
-    public ResponseEntity<Autor> create(@RequestBody Autor obj){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(obj));
+    public ResponseEntity<Autor> create(@RequestBody Autor autor){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(autor));
     }
 
     @DeleteMapping(value = "/{id}")

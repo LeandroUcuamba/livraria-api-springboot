@@ -16,8 +16,8 @@ public class LivroController {
     private LivroService service;
 
     @PostMapping
-    public ResponseEntity<Livro> create(@RequestBody Livro obj){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(obj));
+    public ResponseEntity<Livro> create(@RequestBody Livro livro){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(livro));
     }
 
     @DeleteMapping(value = "/{id}")
