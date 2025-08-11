@@ -1,5 +1,7 @@
 package com.leandroucuamba.livraria.service;
 
+import com.leandroucuamba.livraria.entity.Autor;
+import com.leandroucuamba.livraria.repository.AutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.leandroucuamba.livraria.entity.Livro;
@@ -12,18 +14,29 @@ import java.util.Optional;
 @Service
 public class LivroService {
     @Autowired
-    private LivroRepository repository;
+    private LivroRepository livroRepository;
 
-    public Livro create(Livro livro){
-        return repository.save(livro);
+    @Autowired
+    private AutorRepository autorRepository;
+
+    public Livro create(Livro livro) {
+        if (livro.getAutor() != null && livro.getAutor().getId() != null) {
+            Autor autor = autorRepository.findById(livro.getAutor().getId())
+                    .orElseThrow(() -> new RuntimeException("Autor não encontrado"));
+            livro.setAutor(autor);
+        } else {
+            livro.setAutor(null);
+        }
+
+        return livroRepository.save(livro);
     }
 
     public void delete(Long id){
-        repository.deleteById(id);
+        livroRepository.deleteById(id);
     }
 
     public Livro getId(Long id){
-        Optional<Livro> livro = repository.findById(id);
+        Optional<Livro> livro = livroRepository.findById(id);
         if (livro.isEmpty()){
             throw new EntityNotFound("Livro de ID: "+id+" não encontrado!");
         }
@@ -31,16 +44,16 @@ public class LivroService {
     }
 
     public List<Livro> getAll(){
-        return repository.findAll();
+        return livroRepository.findAll();
     }
 
     public Livro update(Livro livro){
-        Optional<Livro> novoLivro = repository.findById(livro.getId());
+        Optional<Livro> novoLivro = livroRepository.findById(livro.getId());
         if (novoLivro.isEmpty()){
             throw new EntityNotFound("Livro de ID: "+livro.getId()+" não encontrado!");
         }
         updateLivro(novoLivro, livro);
-        return repository.save(novoLivro.get());
+        return livroRepository.save(novoLivro.get());
     }
 
     private void updateLivro(Optional<Livro> novoLivro, Livro livro) {
